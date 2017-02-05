@@ -1,0 +1,382 @@
+//compilation javacc MiniJavaLexer.jj
+
+options {
+  JAVA_UNICODE_ESCAPE = true;
+}
+
+PARSER_BEGIN(MiniJavaParser)
+  public class MiniJavaParser {}
+PARSER_END(MiniJavaParser)
+
+// Insert a specification of a lexical analysis here. 
+TOKEN : {        
+	<INT: "int">
+    |<VOID: "void">
+    |<BOOLEAN: "boolean">
+    |<FALSE: "false">
+    |<TRUE: "true">
+    |<STRING: "String">
+    |<IF: "if">
+    |<ELSE: "else">
+    |<MAIN: "main">
+    |<THIS: "this">
+    |<NEW: "new">
+    |<WHILE: "while">
+    |<PUBLIC: "public">
+    |<CLASS: "class">
+    |<STATIC: "static">
+    |<LENGTH: "length">
+    |<RETURN: "return">
+    |<EXTENDS: "extends">
+    |<LPAREN: "(">
+    |<RPAREN: ")">
+	|<LBRACE: "{">
+	|<RBRACE: "}">
+	|<LBRACKET: "[">
+	|<RBRACKET: "]">
+	|<SEMICOLON: ";">
+	|<COMMA: ",">
+	|<EQUAL: "=">
+	|<DOT: ".">
+	|<PRINTLN: "System.out.println">		      
+	|<AND: "&&">
+	|<LESS: "<">
+	|<PLUS: "+">
+	|<MINUS: "-">
+	|<TIMES: "*">
+	|<NOT: "!">
+    |< #DIGIT: ["0"-"9"] >
+	|< #LETTER: ["A"-"Z"] | ["a"-"z"] >
+	| < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT> | "_")* >
+	| < INTEGER_LITERAL: (<DIGIT>)+ >
+}
+
+/* The regular expressions here will be skipped during lexical analysis: */
+SKIP : {
+	<"//" (<DIGIT> | <LETTER> | " ")* ("\n" | "\r" | "\r\n")>
+	|<"/*" (<DIGIT> | <LETTER> | (" " | "\n" | "\r" | "\r\n"))* "*/">
+	| " "
+	| "\t"
+	| "\n"
+}
+
+// The following is a simple grammar that will allow you
+// to test the generated lexer.
+/*
+void Goal() :
+{}
+{
+  ( MiniJavaToken() )*
+  <EOF>
+}
+
+void MiniJavaToken():
+{}
+{
+  "{" | "public" | "static" | "void" |
+  "main" | "(" | "String"  | "[" | "]" | ")" | "}" | "extends" | ";"
+  | "return" | "," | "int" | "boolean" | "=" | "if" | "else" | "while"
+  | "System.out.println" | "&&" | "<" | "+" | "-" | "*" | "." |
+  "length" | <INTEGER_LITERAL> | "true" | "false" | "this" | "new" |
+  "!"
+}
+*/
+//adding parser
+void Program() :
+{}
+{
+    MainClass() (TypeDeclaration())* <EOF>
+}
+
+//rule for main class
+void MainClass() :
+{}
+{
+    <CLASS> <IDENTIFIER> 
+    <LBRACE> 
+    	<PUBLIC> <STATIC> <VOID> <MAIN> <LPAREN> <STRING> <LBRACKET> <RBRACKET> <IDENTIFIER> <RPAREN>
+    	<LBRACE> 
+    		(LOOKAHEAD(2) VarDecl())* (Statement())* 
+    	<RBRACE> 
+    <RBRACE>
+}
+
+void TypeDeclaration():
+{}
+{
+	LOOKAHEAD(3) ClassDecl()
+	| ClassExtendsDeclaration()
+}
+
+//rule for class other than main
+void ClassDecl():
+{}
+{
+    <CLASS> <IDENTIFIER> 
+    <LBRACE> 
+    	(VarDecl())* (MethodDecl())* 
+    <RBRACE>
+}
+
+void ClassExtendsDeclaration():
+{}
+{
+	<CLASS> <IDENTIFIER> <EXTENDS> <IDENTIFIER> 
+	<LBRACE> 
+		(VarDecl())* (MethodDecl())* 
+	<RBRACE>
+}
+
+void VarDecl():
+{}
+{
+    Type() <IDENTIFIER> <SEMICOLON>
+}
+
+void MethodDecl():
+{}
+{
+    <PUBLIC> Type() <IDENTIFIER> <LPAREN> (FormalList())? <RPAREN>
+    <LBRACE> 
+    	(LOOKAHEAD(2) VarDecl())* 
+    	(Statement())* 
+    	<RETURN> Exp() <SEMICOLON> 
+    <RBRACE>
+}
+
+void FormalList():
+{}
+{
+	FormalParameter() (FormalRest())*
+}
+
+void FormalParameter():
+{}
+{
+	Type() <IDENTIFIER>
+}
+
+void FormalRest():
+{}
+{
+    <COMMA> FormalParameter()
+}
+
+void Type():
+{}
+{
+    LOOKAHEAD(2) ArrayType()
+    | BooleanType()
+    | IntegerType()
+    | Identifier()
+}
+
+void ArrayType():
+{}
+{
+	<INT> <LBRACKET> <RBRACKET>
+}
+
+void BooleanType():
+{}
+{
+	<BOOLEAN>
+}
+
+void IntegerType():
+{}
+{
+	<INT>
+}
+
+void Statement():
+{}
+{
+    Block()
+    | LOOKAHEAD(2) AssignmentStatement() 
+    | ArrayAssignmentStatement()
+    | IfStatement()
+    | WhileStatement()
+    | PrintStatement()
+}
+
+void Block():
+{}
+{
+	<LBRACE> (Statement())* <RBRACE>
+}
+
+void AssignmentStatement():
+{}
+{
+    <IDENTIFIER> <EQUAL> Exp() <SEMICOLON>
+}
+
+void ArrayAssignmentStatement():
+{}
+{
+	<IDENTIFIER> <LBRACKET> Exp() <RBRACKET> <EQUAL> Exp() <SEMICOLON>
+}
+
+void IfStatement():
+{}
+{
+	<IF> <LPAREN> Exp() <RPAREN> 
+		Statement() 
+	<ELSE> Statement()
+}
+
+void WhileStatement():
+{}
+{
+	<WHILE> <LPAREN> Exp() <RPAREN> 
+		Statement()
+}
+
+void PrintStatement():
+{}
+{
+	<PRINTLN> <LPAREN> Exp() <RPAREN> <SEMICOLON>
+}
+
+//Expression
+void Exp():
+{}
+{
+	LOOKAHEAD(3) AndExpression()
+	| LOOKAHEAD(3) CompareExpression()
+	| LOOKAHEAD(3) PlusExpression()
+	| LOOKAHEAD(3) MinusExpression()
+	| LOOKAHEAD(3) TimesExpression()
+   	| LOOKAHEAD(3) ArrayLookup()
+   	| LOOKAHEAD(3) ArrayLength()
+   	| LOOKAHEAD(3) MessageSend()
+   	| PrimaryExpression()
+}
+
+void AndExpression():
+{}
+{
+	PrimaryExpression() <AND> PrimaryExpression()
+}
+
+void CompareExpression():
+{}
+{
+	PrimaryExpression() <LESS> PrimaryExpression()
+}
+
+void PlusExpression():
+{}
+{
+	PrimaryExpression() <PLUS> PrimaryExpression()
+}
+
+void MinusExpression():
+{}
+{
+	PrimaryExpression() <MINUS> PrimaryExpression()
+}
+
+void TimesExpression():
+{}
+{
+	PrimaryExpression() <TIMES> PrimaryExpression()
+}
+
+void ArrayLookup():
+{}
+{
+    PrimaryExpression() <LBRACKET> Exp() <RBRACKET>
+}
+
+void ArrayLength():
+{}
+{
+	PrimaryExpression() <DOT> <LENGTH>
+}
+
+void MessageSend():
+{}
+{
+    PrimaryExpression() <DOT> <IDENTIFIER> <LPAREN> (ExpList())? <RPAREN>
+}
+
+void ExpList(): 
+{}
+{
+   Exp() (ExpRest())*
+}
+
+void ExpRest():
+{}
+{
+    "," Exp()
+}
+void PrimaryExpression():
+{}
+{
+	IntegerLiteral()    
+    | TrueLiteral()
+    | FalseLiteral()
+    | Identifier()
+    | ThisExpression()
+    | LOOKAHEAD(2) ArrayAllocationExpression()
+    | AllocationExpression()
+    | NotExpression()
+    | BracketExpression()
+}
+
+void IntegerLiteral():
+{}
+{
+	<INTEGER_LITERAL>
+}
+
+void TrueLiteral():
+{}
+{
+	<TRUE>
+}
+
+void FalseLiteral():
+{}
+{
+	<FALSE>
+}
+
+void Identifier():
+{}
+{
+	<IDENTIFIER>
+}
+
+void ThisExpression():
+{}
+{
+	<THIS>
+}
+
+void ArrayAllocationExpression():
+{}
+{
+	<NEW> <INT> <LBRACKET> Exp() <RBRACKET>
+}
+
+void AllocationExpression():
+{}
+{
+	<NEW> <IDENTIFIER> <LPAREN> <RPAREN>
+}
+
+void NotExpression():
+{}
+{
+	<NOT> Exp()
+}
+
+void BracketExpression():
+{}
+{
+	<LPAREN> Exp() <RPAREN>
+}
