@@ -1,5 +1,4 @@
 //compilation javacc MiniJavaLexer.jj
-
 options {
   JAVA_UNICODE_ESCAPE = true;
 }
@@ -85,7 +84,7 @@ void MiniJavaToken():
 void Program() :
 {}
 {
-    MainClass() (TypeDeclaration())* <EOF>
+    MainClass() (ClassDecl())* <EOF>
 }
 
 //rule for main class
@@ -101,15 +100,15 @@ void MainClass() :
     <RBRACE>
 }
 
-void TypeDeclaration():
+void ClassDecl():
 {}
 {
-	LOOKAHEAD(3) ClassDecl()
+	LOOKAHEAD(3) ClassDeclSimple()
 	| ClassExtendsDeclaration()
 }
 
 //rule for class other than main
-void ClassDecl():
+void ClassDeclSimple():
 {}
 {
     <CLASS> <IDENTIFIER> 
@@ -165,13 +164,19 @@ void FormalRest():
 void Type():
 {}
 {
-    LOOKAHEAD(2) ArrayType()
+    LOOKAHEAD(2) IntArrayType()
     | BooleanType()
     | IntegerType()
-    | Identifier()
+    | IdentifierType()
 }
 
-void ArrayType():
+void IdentifierType():
+{}
+{
+	<IDENTIFIER>
+}
+
+void IntArrayType():
 {}
 {
 	<INT> <LBRACKET> <RBRACKET>
@@ -244,13 +249,13 @@ void Exp():
 {}
 {
 	LOOKAHEAD(3) AndExpression()
-	| LOOKAHEAD(3) CompareExpression()
+	| LOOKAHEAD(3) LessThanExpression()
 	| LOOKAHEAD(3) PlusExpression()
 	| LOOKAHEAD(3) MinusExpression()
 	| LOOKAHEAD(3) TimesExpression()
    	| LOOKAHEAD(3) ArrayLookup()
    	| LOOKAHEAD(3) ArrayLength()
-   	| LOOKAHEAD(3) MessageSend()
+   	| LOOKAHEAD(3) Call()
    	| PrimaryExpression()
 }
 
@@ -260,7 +265,7 @@ void AndExpression():
 	PrimaryExpression() <AND> PrimaryExpression()
 }
 
-void CompareExpression():
+void LessThanExpression():
 {}
 {
 	PrimaryExpression() <LESS> PrimaryExpression()
@@ -296,7 +301,7 @@ void ArrayLength():
 	PrimaryExpression() <DOT> <LENGTH>
 }
 
-void MessageSend():
+void Call():
 {}
 {
     PrimaryExpression() <DOT> <IDENTIFIER> <LPAREN> (ExpList())? <RPAREN>
@@ -319,10 +324,10 @@ void PrimaryExpression():
 	IntegerLiteral()    
     | TrueLiteral()
     | FalseLiteral()
-    | Identifier()
+    | IdentifierExpression()
     | ThisExpression()
-    | LOOKAHEAD(2) ArrayAllocationExpression()
-    | AllocationExpression()
+    | LOOKAHEAD(2) NewArray()
+    | NewObject()
     | NotExpression()
     | BracketExpression()
 }
@@ -345,7 +350,7 @@ void FalseLiteral():
 	<FALSE>
 }
 
-void Identifier():
+void IdentifierExpression():
 {}
 {
 	<IDENTIFIER>
@@ -357,13 +362,13 @@ void ThisExpression():
 	<THIS>
 }
 
-void ArrayAllocationExpression():
+void NewArray():
 {}
 {
 	<NEW> <INT> <LBRACKET> Exp() <RBRACKET>
 }
 
-void AllocationExpression():
+void NewObject():
 {}
 {
 	<NEW> <IDENTIFIER> <LPAREN> <RPAREN>

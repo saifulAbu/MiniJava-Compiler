@@ -35,7 +35,7 @@ void MiniJavaToken():
         jj_la1[0] = jj_gen;
         break label_1;
       }
-      TypeDeclaration();
+      ClassDecl();
     }
     jj_consume_token(0);
   }
@@ -85,9 +85,9 @@ void MiniJavaToken():
     jj_consume_token(RBRACE);
   }
 
-  static final public void TypeDeclaration() throws ParseException {
+  static final public void ClassDecl() throws ParseException {
     if (jj_2_2(3)) {
-      ClassDecl();
+      ClassDeclSimple();
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CLASS:
@@ -102,7 +102,7 @@ void MiniJavaToken():
   }
 
 //rule for class other than main
-  static final public void ClassDecl() throws ParseException {
+  static final public void ClassDeclSimple() throws ParseException {
     jj_consume_token(CLASS);
     jj_consume_token(IDENTIFIER);
     jj_consume_token(LBRACE);
@@ -252,7 +252,7 @@ void MiniJavaToken():
 
   static final public void Type() throws ParseException {
     if (jj_2_4(2)) {
-      ArrayType();
+      IntArrayType();
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case BOOLEAN:
@@ -262,7 +262,7 @@ void MiniJavaToken():
         IntegerType();
         break;
       case IDENTIFIER:
-        Identifier();
+        IdentifierType();
         break;
       default:
         jj_la1[10] = jj_gen;
@@ -272,7 +272,11 @@ void MiniJavaToken():
     }
   }
 
-  static final public void ArrayType() throws ParseException {
+  static final public void IdentifierType() throws ParseException {
+    jj_consume_token(IDENTIFIER);
+  }
+
+  static final public void IntArrayType() throws ParseException {
     jj_consume_token(INT);
     jj_consume_token(LBRACKET);
     jj_consume_token(RBRACKET);
@@ -387,7 +391,7 @@ void MiniJavaToken():
     if (jj_2_6(3)) {
       AndExpression();
     } else if (jj_2_7(3)) {
-      CompareExpression();
+      LessThanExpression();
     } else if (jj_2_8(3)) {
       PlusExpression();
     } else if (jj_2_9(3)) {
@@ -399,7 +403,7 @@ void MiniJavaToken():
     } else if (jj_2_12(3)) {
       ArrayLength();
     } else if (jj_2_13(3)) {
-      MessageSend();
+      Call();
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case FALSE:
@@ -426,7 +430,7 @@ void MiniJavaToken():
     PrimaryExpression();
   }
 
-  static final public void CompareExpression() throws ParseException {
+  static final public void LessThanExpression() throws ParseException {
     PrimaryExpression();
     jj_consume_token(LESS);
     PrimaryExpression();
@@ -463,7 +467,7 @@ void MiniJavaToken():
     jj_consume_token(LENGTH);
   }
 
-  static final public void MessageSend() throws ParseException {
+  static final public void Call() throws ParseException {
     PrimaryExpression();
     jj_consume_token(DOT);
     jj_consume_token(IDENTIFIER);
@@ -519,7 +523,7 @@ void MiniJavaToken():
       FalseLiteral();
       break;
     case IDENTIFIER:
-      Identifier();
+      IdentifierExpression();
       break;
     case THIS:
       ThisExpression();
@@ -527,11 +531,11 @@ void MiniJavaToken():
     default:
       jj_la1[17] = jj_gen;
       if (jj_2_14(2)) {
-        ArrayAllocationExpression();
+        NewArray();
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case NEW:
-          AllocationExpression();
+          NewObject();
           break;
         case NOT:
           NotExpression();
@@ -560,7 +564,7 @@ void MiniJavaToken():
     jj_consume_token(FALSE);
   }
 
-  static final public void Identifier() throws ParseException {
+  static final public void IdentifierExpression() throws ParseException {
     jj_consume_token(IDENTIFIER);
   }
 
@@ -568,7 +572,7 @@ void MiniJavaToken():
     jj_consume_token(THIS);
   }
 
-  static final public void ArrayAllocationExpression() throws ParseException {
+  static final public void NewArray() throws ParseException {
     jj_consume_token(NEW);
     jj_consume_token(INT);
     jj_consume_token(LBRACKET);
@@ -576,7 +580,7 @@ void MiniJavaToken():
     jj_consume_token(RBRACKET);
   }
 
-  static final public void AllocationExpression() throws ParseException {
+  static final public void NewObject() throws ParseException {
     jj_consume_token(NEW);
     jj_consume_token(IDENTIFIER);
     jj_consume_token(LPAREN);
@@ -692,26 +696,6 @@ void MiniJavaToken():
     finally { jj_save(13, xla); }
   }
 
-  static private boolean jj_3R_33() {
-    if (jj_scan_token(NEW)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_15() {
-    if (jj_scan_token(INT)) return true;
-    if (jj_scan_token(LBRACKET)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_19() {
-    if (jj_3R_27()) return true;
-    if (jj_scan_token(PLUS)) return true;
-    if (jj_3R_27()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_25() {
     if (jj_scan_token(NEW)) return true;
     if (jj_scan_token(INT)) return true;
@@ -733,6 +717,21 @@ void MiniJavaToken():
     return false;
   }
 
+  static private boolean jj_3R_32() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_13() {
+    if (jj_3R_24()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_12() {
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
   static private boolean jj_3_4() {
     if (jj_3R_15()) return true;
     return false;
@@ -751,21 +750,6 @@ void MiniJavaToken():
     }
     }
     }
-    return false;
-  }
-
-  static private boolean jj_3R_32() {
-    if (jj_3R_27()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_13() {
-    if (jj_3R_24()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_12() {
-    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -855,12 +839,6 @@ void MiniJavaToken():
     return false;
   }
 
-  static private boolean jj_3R_13() {
-    if (jj_3R_26()) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_27() {
     Token xsp;
     xsp = jj_scanpos;
@@ -892,9 +870,29 @@ void MiniJavaToken():
     return false;
   }
 
+  static private boolean jj_3R_13() {
+    if (jj_3R_26()) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_16() {
     if (jj_scan_token(IDENTIFIER)) return true;
     if (jj_scan_token(EQUAL)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_24() {
+    if (jj_3R_27()) return true;
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_23() {
+    if (jj_3R_27()) return true;
+    if (jj_scan_token(DOT)) return true;
+    if (jj_scan_token(LENGTH)) return true;
     return false;
   }
 
@@ -910,22 +908,8 @@ void MiniJavaToken():
     return false;
   }
 
-  static private boolean jj_3R_24() {
-    if (jj_3R_27()) return true;
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
   static private boolean jj_3_2() {
     if (jj_3R_14()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_23() {
-    if (jj_3R_27()) return true;
-    if (jj_scan_token(DOT)) return true;
-    if (jj_scan_token(LENGTH)) return true;
     return false;
   }
 
@@ -964,6 +948,26 @@ void MiniJavaToken():
   static private boolean jj_3R_20() {
     if (jj_3R_27()) return true;
     if (jj_scan_token(MINUS)) return true;
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_33() {
+    if (jj_scan_token(NEW)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_15() {
+    if (jj_scan_token(INT)) return true;
+    if (jj_scan_token(LBRACKET)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_19() {
+    if (jj_3R_27()) return true;
+    if (jj_scan_token(PLUS)) return true;
     if (jj_3R_27()) return true;
     return false;
   }
