@@ -4,6 +4,7 @@ options {
 }
 
 PARSER_BEGIN(MiniJavaParser)
+  import saif.compiler.syntaxtree.*;
   public class MiniJavaParser {}
 PARSER_END(MiniJavaParser)
 
@@ -245,143 +246,197 @@ void PrintStatement():
 }
 
 //Expression
-void Exp():
-{}
+Exp Exp():
+{Exp exp;}
 {
-	LOOKAHEAD(3) AndExpression()
-	| LOOKAHEAD(3) LessThanExpression()
-	| LOOKAHEAD(3) PlusExpression()
-	| LOOKAHEAD(3) MinusExpression()
-	| LOOKAHEAD(3) TimesExpression()
-   	| LOOKAHEAD(3) ArrayLookup()
-   	| LOOKAHEAD(3) ArrayLength()
-   	| LOOKAHEAD(3) Call()
-   	| PrimaryExpression()
+	LOOKAHEAD(3) exp = AndExpression()
+	| LOOKAHEAD(3) exp = LessThanExpression()
+	| LOOKAHEAD(3) exp = PlusExpression()
+	| LOOKAHEAD(3) exp = MinusExpression()
+	| LOOKAHEAD(3) exp = TimesExpression()
+   	| LOOKAHEAD(3) exp = ArrayLookup()
+   	| LOOKAHEAD(3) exp = ArrayLength()
+   	| LOOKAHEAD(3) exp = Call()
+   	| exp = PrimaryExpression()
+   	{
+   		return exp;
+   	}
 }
 
-void AndExpression():
-{}
+AndExpression AndExpression():
+{Exp exp1, exp2;}
 {
-	PrimaryExpression() <AND> PrimaryExpression()
+	exp1 = PrimaryExpression() <AND> exp2 = PrimaryExpression()
+	{
+		return new AndExpression(exp1, exp2);
+	}
 }
 
-void LessThanExpression():
-{}
+LessThanExpression LessThanExpression():
+{Exp exp1, exp2;}
 {
-	PrimaryExpression() <LESS> PrimaryExpression()
+	exp1 = PrimaryExpression() <LESS> exp2 = PrimaryExpression()
+	{
+		return new LessThanExpression(exp1, exp2);
+	}
 }
 
-void PlusExpression():
-{}
+PlusExpression PlusExpression():
+{Exp exp1, exp2;}
 {
-	PrimaryExpression() <PLUS> PrimaryExpression()
+	exp1 = PrimaryExpression() <PLUS> exp2 = PrimaryExpression()
+	{
+		return new PlusExpression(exp1, exp2);
+	}
 }
 
-void MinusExpression():
-{}
+MinusExpression MinusExpression():
+{Exp exp1, exp2;}
 {
-	PrimaryExpression() <MINUS> PrimaryExpression()
+	exp1 = PrimaryExpression() <MINUS> exp2 = PrimaryExpression()
+	{
+		return new MinusExpression(exp1, exp2);
+	}
 }
 
-void TimesExpression():
-{}
+TimesExpression TimesExpression():
+{Exp exp1, exp2;}
 {
-	PrimaryExpression() <TIMES> PrimaryExpression()
+	exp1 = PrimaryExpression() <TIMES> exp2 = PrimaryExpression()
+	{
+		return new TimesExpression(exp1, exp2);
+	}
 }
 
-void ArrayLookup():
-{}
+ArrayLookup ArrayLookup():
+{Exp idExp, indexExp;}
 {
-    PrimaryExpression() <LBRACKET> Exp() <RBRACKET>
+    idExp = PrimaryExpression() <LBRACKET> indexExp = Exp() <RBRACKET>
+    {
+    	return new ArrayLookup(idExp, indexExp); 
+    }
 }
 
-void ArrayLength():
-{}
+ArrayLength ArrayLength():
+{Exp ex;}
 {
-	PrimaryExpression() <DOT> <LENGTH>
+	ex = PrimaryExpression() <DOT> <LENGTH>
+	{
+		return new ArrayLength(ex);
+	}
 }
 
-void Call():
-{}
+Call Call():
+{Exp ex; Token t; ExpList expList = null;}
 {
-    PrimaryExpression() <DOT> <IDENTIFIER> <LPAREN> (ExpList())? <RPAREN>
+    ex = PrimaryExpression() <DOT> t = <IDENTIFIER> <LPAREN> (expList = ExpList())? <RPAREN>
+    {
+    	Identifier id = new Identifier(t.image);
+    	return new Call(ex, id, expList);
+    }
 }
 
-void ExpList(): 
-{}
+ExpList ExpList(): 
+{ExpList expList = new ExpList(); Exp exp;}
 {
-   Exp() (ExpRest())*
+   exp = Exp() {expList.addElement(exp);} (exp = ExpRest() {expList.addElement(exp);})*
+   {return expList;}
 }
 
-void ExpRest():
-{}
+Exp ExpRest():
+{Exp ex;}
 {
-    "," Exp()
+    "," ex = Exp() {return ex;}
 }
-void PrimaryExpression():
-{}
+Exp PrimaryExpression():
+{Exp exp;}
 {
-	IntegerLiteral()    
-    | TrueLiteral()
-    | FalseLiteral()
-    | IdentifierExpression()
-    | ThisExpression()
-    | LOOKAHEAD(2) NewArray()
-    | NewObject()
-    | NotExpression()
-    | BracketExpression()
-}
-
-void IntegerLiteral():
-{}
-{
-	<INTEGER_LITERAL>
+	exp = IntegerLiteral()    
+    | exp = TrueLiteral()
+    | exp = FalseLiteral()
+    | exp = IdentifierExpression()
+    | exp = ThisExpression()
+    | LOOKAHEAD(2) exp = NewArray()
+    | exp = NewObject()
+    | exp = NotExpression()
+    | exp = BracketExpression()
+    {return exp;}
 }
 
-void TrueLiteral():
+IntegerLiteral IntegerLiteral():
+{Token t;}
+{
+	t = <INTEGER_LITERAL>
+	{
+		return new IntegerLiteral(Integer.parseInt(t.image));
+	}
+}
+
+TrueLiteral TrueLiteral():
 {}
 {
 	<TRUE>
+	{
+		return new TrueLiteral();
+	}
 }
 
-void FalseLiteral():
+FalseLiteral FalseLiteral():
 {}
 {
 	<FALSE>
+	{
+		return new FalseLiteral();
+	}
 }
 
-void IdentifierExpression():
-{}
+IdentifierExpression IdentifierExpression():
+{Token t;}
 {
-	<IDENTIFIER>
+	t=<IDENTIFIER>
+	{
+		return new IdentifierExpression(t.image);
+	}
 }
 
-void ThisExpression():
+ThisExpression ThisExpression():
 {}
 {
 	<THIS>
+	{
+		return new ThisExpression();
+	}
 }
 
-void NewArray():
-{}
+NewArray NewArray():
+{Exp exp;}
 {
-	<NEW> <INT> <LBRACKET> Exp() <RBRACKET>
+	<NEW> <INT> <LBRACKET> exp = Exp() <RBRACKET>
+	{
+		return new NewArray(exp);
+	}
 }
 
-void NewObject():
-{}
+NewObject NewObject():
+{NewObject obj; Token t; Identifier id;}
 {
-	<NEW> <IDENTIFIER> <LPAREN> <RPAREN>
+	<NEW> t = <IDENTIFIER> <LPAREN> <RPAREN>
+	{id = new Identifier(t.image);
+	 obj = new NewObject(id);
+	 return obj;	
+	}
 }
 
-void NotExpression():
-{}
+NotExpression NotExpression():
+{Exp exp;}
 {
-	<NOT> Exp()
+	<NOT> exp = Exp()
+	{return new NotExpression(exp);}
 }
 
-void BracketExpression():
-{}
+Exp BracketExpression():
+{Exp ex;}
 {
-	<LPAREN> Exp() <RPAREN>
+	<LPAREN> ex = Exp() <RPAREN>
+	{return ex;}
 }

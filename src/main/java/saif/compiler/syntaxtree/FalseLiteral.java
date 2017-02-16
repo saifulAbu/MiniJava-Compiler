@@ -1,5 +1,10 @@
 package saif.compiler.syntaxtree;
 
-public class FalseLiteral {
+import saif.compiler.visitor.Visitor;
 
+public class FalseLiteral extends Exp{
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
+	}
 }

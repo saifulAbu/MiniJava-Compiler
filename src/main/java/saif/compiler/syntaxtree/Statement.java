@@ -1,5 +1,7 @@
 package saif.compiler.syntaxtree;
 
-public abstract class Statement {
+import saif.compiler.visitor.Visitor;
 
+public abstract class Statement {
+	public abstract void accept(Visitor visitor);
 }

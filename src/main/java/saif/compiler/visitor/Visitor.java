@@ -30,7 +30,7 @@ import saif.compiler.syntaxtree.PlusExpression;
 import saif.compiler.syntaxtree.PrintStatement;
 import saif.compiler.syntaxtree.Program;
 import saif.compiler.syntaxtree.ThisExpression;
-import saif.compiler.syntaxtree.TimeExpression;
+import saif.compiler.syntaxtree.TimesExpression;
 import saif.compiler.syntaxtree.TrueLiteral;
 import saif.compiler.syntaxtree.VarDecl;
 import saif.compiler.syntaxtree.WhileStatement;
@@ -62,7 +62,7 @@ public interface Visitor {
 	public void visit(PlusExpression plusExpr);
 	public void visit(MinusExpression minusExpr);
 	
-	public void visit(TimeExpression timesExpr);
+	public void visit(TimesExpression timesExpr);
 	public void visit(ArrayLookup arrayLookup);
 	public void visit(ArrayLength arrayLength);
 	public void visit(Call call);
