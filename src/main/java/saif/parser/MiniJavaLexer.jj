@@ -1,0 +1,540 @@
+//compilation javacc MiniJavaLexer.jj
+options {
+  JAVA_UNICODE_ESCAPE = true;
+}
+
+PARSER_BEGIN(MiniJavaParser)
+  package saif.parser;
+  
+  
+  import saif.compiler.syntaxtree.*;
+  public class MiniJavaParser {}
+PARSER_END(MiniJavaParser)
+
+// Insert a specification of a lexical analysis here. 
+TOKEN : {        
+	<INT: "int">
+    |<VOID: "void">
+    |<BOOLEAN: "boolean">
+    |<FALSE: "false">
+    |<TRUE: "true">
+    |<STRING: "String">
+    |<IF: "if">
+    |<ELSE: "else">
+    |<MAIN: "main">
+    |<THIS: "this">
+    |<NEW: "new">
+    |<WHILE: "while">
+    |<PUBLIC: "public">
+    |<CLASS: "class">
+    |<STATIC: "static">
+    |<LENGTH: "length">
+    |<RETURN: "return">
+    |<EXTENDS: "extends">
+    |<LPAREN: "(">
+    |<RPAREN: ")">
+	|<LBRACE: "{">
+	|<RBRACE: "}">
+	|<LBRACKET: "[">
+	|<RBRACKET: "]">
+	|<SEMICOLON: ";">
+	|<COMMA: ",">
+	|<EQUAL: "=">
+	|<DOT: ".">
+	|<PRINTLN: "System.out.println">		      
+	|<AND: "&&">
+	|<LESS: "<">
+	|<PLUS: "+">
+	|<MINUS: "-">
+	|<TIMES: "*">
+	|<NOT: "!">
+    |< #DIGIT: ["0"-"9"] >
+	|< #LETTER: ["A"-"Z"] | ["a"-"z"] >
+	| < IDENTIFIER: <LETTER> (<LETTER>|<DIGIT> | "_")* >
+	| < INTEGER_LITERAL: (<DIGIT>)+ >
+}
+
+/* The regular expressions here will be skipped during lexical analysis: */
+SKIP : {
+	<"//" (<DIGIT> | <LETTER> | " ")* ("\n" | "\r" | "\r\n")>
+	|<"/*" (<DIGIT> | <LETTER> | (" " | "\n" | "\r" | "\r\n"))* "*/">
+	| " "
+	| "\t"
+	| "\n"
+}
+
+// The following is a simple grammar that will allow you
+// to test the generated lexer.
+/*
+void Goal() :
+{}
+{
+  ( MiniJavaToken() )*
+  <EOF>
+}
+
+void MiniJavaToken():
+{}
+{
+  "{" | "public" | "static" | "void" |
+  "main" | "(" | "String"  | "[" | "]" | ")" | "}" | "extends" | ";"
+  | "return" | "," | "int" | "boolean" | "=" | "if" | "else" | "while"
+  | "System.out.println" | "&&" | "<" | "+" | "-" | "*" | "." |
+  "length" | <INTEGER_LITERAL> | "true" | "false" | "this" | "new" |
+  "!"
+}
+*/
+//adding parser
+Program Program() :
+{
+	MainClass mainClass;
+ 	ClassDeclList classDeclList = new ClassDeclList();
+ 	ClassDecl classDecl;
+}
+{
+    mainClass = MainClass() (classDecl = ClassDecl() {classDeclList.addElement(classDecl);} )* <EOF>
+	{
+		return new Program(mainClass, classDeclList);
+	}
+}
+
+//rule for main class
+MainClass MainClass() :
+{
+	Identifier className;
+	Identifier args;
+	Statement statement;
+}
+{
+    <CLASS> className = Identifier() 
+    <LBRACE> 
+    	<PUBLIC> <STATIC> <VOID> <MAIN> <LPAREN> <STRING> <LBRACKET> <RBRACKET> args = Identifier() <RPAREN>
+    	<LBRACE> 
+    		statement = Statement() 
+    	<RBRACE> 
+    <RBRACE>
+    {
+    	return new MainClass(className, args, statement);
+    }
+}
+
+ClassDecl ClassDecl():
+{ClassDecl classDecl;}
+{
+	LOOKAHEAD(3) classDecl = ClassDeclSimple()  {return classDecl;}
+	| classDecl = ClassExtendsDeclaration() {return classDecl;}
+}
+
+//rule for class other than main
+ClassDeclSimple ClassDeclSimple():
+{
+	Identifier className;
+	VarDeclList varDeclList = new VarDeclList();
+ 	VarDecl varDecl;
+ 	MethodDeclList methodList = new MethodDeclList();
+ 	MethodDecl methodDecl;
+}
+{
+    <CLASS> className = Identifier() 
+    <LBRACE> 
+    	(varDecl = VarDecl() {varDeclList.addElement(varDecl);})* 
+		(methodDecl = MethodDecl() {methodList.addElement(methodDecl);})*
+    <RBRACE>
+    {
+    	return new ClassDeclSimple(className, varDeclList, methodList);
+    }
+}
+
+ClassExtendsDeclaration ClassExtendsDeclaration():
+{
+	Identifier className;
+ 	Identifier baseClass;
+ 	VarDeclList varDeclList = new VarDeclList();
+ 	VarDecl varDecl;
+ 	MethodDeclList methodList = new MethodDeclList();
+ 	MethodDecl methodDecl;
+ }
+{
+	<CLASS> className = Identifier() <EXTENDS> baseClass = Identifier() 
+	<LBRACE> 
+		(varDecl = VarDecl() {varDeclList.addElement(varDecl);})* 
+		(methodDecl = MethodDecl() {methodList.addElement(methodDecl);})* 
+	<RBRACE>
+	{
+		return new ClassExtendsDeclaration(className, baseClass, varDeclList, methodList);
+	}
+	
+}
+
+VarDecl VarDecl():
+{Type t; Identifier id;}
+{
+    t = Type() id = Identifier() <SEMICOLON>
+    {
+    	return new VarDecl(t, id);
+    }
+}
+
+MethodDecl MethodDecl():
+{Type returnType;
+ Identifier methodName;
+ FormalList parameterList = null;
+ VarDeclList variableList = new VarDeclList();
+ StatementList statementList = new StatementList();
+ Exp returnExpr;
+ Statement stmt;
+ VarDecl varDecl;
+ }
+{
+    <PUBLIC> returnType = Type() methodName = Identifier() <LPAREN> (parameterList = FormalList())? <RPAREN>
+    <LBRACE> 
+    	(LOOKAHEAD(2) varDecl = VarDecl() {variableList.addElement(varDecl);})* 
+    	(stmt = Statement() {statementList.addElement(stmt);})* 
+    	<RETURN> returnExpr = Exp() <SEMICOLON> 
+    <RBRACE>
+    {
+    	return new MethodDecl(returnType, methodName, parameterList, variableList,
+			statementList, returnExpr);
+    }
+}
+
+FormalList FormalList():
+{FormalList list = new FormalList(); FormalParameter fp;}
+{
+	fp = FormalParameter() {list.addElement(fp);}
+	
+	(fp = FormalRest() {list.addElement(fp);})*
+	{
+		return list;
+	}
+}
+
+FormalParameter FormalParameter():
+{Type type; Token t;}
+{
+	type = Type() t = <IDENTIFIER>
+	{
+		return new FormalParameter(type, new Identifier(t.image)); 
+	}
+}
+
+FormalParameter FormalRest():
+{FormalParameter formal;}
+{
+    <COMMA> formal = FormalParameter()
+    {
+    	return formal;
+    }
+}
+
+Type Type():
+{Type t;}
+{
+    LOOKAHEAD(2) t = IntArrayType() {return t;}
+    | t = BooleanType() {return t;}
+    | t = IntegerType() {return t;}
+    | t = IdentifierType() {return t;}
+    
+}
+
+IdentifierType IdentifierType():
+{Token t;}
+{
+	t = <IDENTIFIER>
+	{
+		return new IdentifierType(t.image);
+	}
+}
+
+IntArrayType IntArrayType():
+{}
+{
+	<INT> <LBRACKET> <RBRACKET>
+	{
+		return new IntArrayType();
+	}
+}
+
+BooleanType BooleanType():
+{}
+{
+	<BOOLEAN>
+	{
+		return new BooleanType();
+	}
+}
+
+IntegerType IntegerType():
+{}
+{
+	<INT>
+	{
+		return new IntegerType();
+	}
+}
+
+Statement Statement():
+{Statement stmt;}
+{
+    stmt = Block() {return stmt;}
+    | LOOKAHEAD(2) stmt = AssignmentStatement() {return stmt;} 
+    | stmt = ArrayAssignmentStatement() {return stmt;}
+    | stmt = IfStatement() {return stmt;}
+    | stmt = WhileStatement() {return stmt;}
+    | stmt = PrintStatement() {return stmt;}
+}
+
+Block Block():
+{StatementList stmtList = new StatementList(); Statement stmt;}
+{
+	<LBRACE> (stmt = Statement() {stmtList.addElement(stmt);})* <RBRACE>
+	{
+		return new Block(stmtList);
+	}
+}
+
+AssignmentStatement AssignmentStatement():
+{Token t; Exp exp;}
+{
+    t = <IDENTIFIER> <EQUAL> exp = Exp() <SEMICOLON>
+    {
+    	return new AssignmentStatement(new Identifier(t.image), exp);
+    }
+}
+
+ArrayAssignmentStatement ArrayAssignmentStatement():
+{Token t; Exp exp1, exp2;}
+{
+	t = <IDENTIFIER> <LBRACKET> exp1 = Exp() <RBRACKET> <EQUAL> exp2 = Exp() <SEMICOLON>
+	{
+		return new ArrayAssignmentStatement(new Identifier(t.image), exp1, exp2);
+	}
+}
+
+IfStatement IfStatement():
+{Exp exp; Statement stmt1, stmt2;}
+{
+	<IF> <LPAREN> exp = Exp() <RPAREN> 
+		stmt1 = Statement() 
+	<ELSE> stmt2 = Statement()
+	{
+		return new IfStatement(exp, stmt1, stmt2);
+	}
+}
+
+WhileStatement WhileStatement():
+{Exp exp; Statement stmt;}
+{
+	<WHILE> <LPAREN> exp = Exp() <RPAREN> 
+		stmt = Statement()
+		{
+			return new WhileStatement(exp, stmt);
+		}
+}
+
+PrintStatement PrintStatement():
+{Exp exp;}
+{
+	<PRINTLN> <LPAREN> exp = Exp() <RPAREN> <SEMICOLON>
+	{
+		return new PrintStatement(exp);
+	}
+}
+
+//Expression
+Exp Exp():
+{Exp exp;}
+{
+	LOOKAHEAD(3) exp = PrimaryExpression() {return exp;}
+	| LOOKAHEAD(3) exp = AndExpression() {return exp;}
+	| LOOKAHEAD(3) exp = LessThanExpression() {return exp;}
+	| LOOKAHEAD(3) exp = PlusExpression() {return exp;}
+	| LOOKAHEAD(3) exp = MinusExpression() {return exp;}
+	| LOOKAHEAD(3) exp = TimesExpression() {return exp;}
+   	| LOOKAHEAD(3) exp = ArrayLookup() {return exp;}
+   	| LOOKAHEAD(3) exp = ArrayLength() {return exp;}
+   	| LOOKAHEAD(3) exp = Call() {return exp;}
+   	
+}
+
+AndExpression AndExpression():
+{Exp exp1, exp2;}
+{
+	exp1 = PrimaryExpression() <AND> exp2 = PrimaryExpression()
+	{
+		return new AndExpression(exp1, exp2);
+	}
+}
+
+LessThanExpression LessThanExpression():
+{Exp exp1, exp2;}
+{
+	exp1 = PrimaryExpression() <LESS> exp2 = PrimaryExpression()
+	{
+		return new LessThanExpression(exp1, exp2);
+	}
+}
+
+PlusExpression PlusExpression():
+{Exp exp1, exp2;}
+{
+	exp1 = PrimaryExpression() <PLUS> exp2 = PrimaryExpression()
+	{
+		return new PlusExpression(exp1, exp2);
+	}
+}
+
+MinusExpression MinusExpression():
+{Exp exp1, exp2;}
+{
+	exp1 = PrimaryExpression() <MINUS> exp2 = PrimaryExpression()
+	{
+		return new MinusExpression(exp1, exp2);
+	}
+}
+
+TimesExpression TimesExpression():
+{Exp exp1, exp2;}
+{
+	exp1 = PrimaryExpression() <TIMES> exp2 = PrimaryExpression()
+	{
+		return new TimesExpression(exp1, exp2);
+	}
+}
+
+ArrayLookup ArrayLookup():
+{Exp idExp, indexExp;}
+{
+    idExp = PrimaryExpression() <LBRACKET> indexExp = Exp() <RBRACKET>
+    {
+    	return new ArrayLookup(idExp, indexExp); 
+    }
+}
+
+ArrayLength ArrayLength():
+{Exp ex;}
+{
+	ex = PrimaryExpression() <DOT> <LENGTH>
+	{
+		return new ArrayLength(ex);
+	}
+}
+
+Call Call():
+{Exp ex; Identifier id; ExpList expList = null;}
+{
+    ex = PrimaryExpression() <DOT> id = Identifier() <LPAREN> (expList = ExpList())? <RPAREN>
+    {
+    	return new Call(ex, id, expList);
+    }
+}
+
+ExpList ExpList(): 
+{ExpList expList = new ExpList(); Exp exp;}
+{
+   exp = Exp() {expList.addElement(exp);} (exp = ExpRest() {expList.addElement(exp);})*
+   {return expList;}
+}
+
+Exp ExpRest():
+{Exp ex;}
+{
+    "," ex = Exp() {return ex;}
+}
+Exp PrimaryExpression():
+{Exp exp;}
+{
+	exp = IntegerLiteral() {return exp;}    
+    | exp = TrueLiteral() {return exp;}
+    | exp = FalseLiteral() {return exp;}
+    | exp = IdentifierExpression() {return exp;}
+    | exp = ThisExpression() {return exp;}
+    | LOOKAHEAD(2) exp = NewArray() {return exp;}
+    | exp = NewObject() {return exp;}
+    | exp = NotExpression() {return exp;}
+    | exp = BracketExpression() {return exp;}
+}
+
+IntegerLiteral IntegerLiteral():
+{Token t;}
+{
+	t = <INTEGER_LITERAL>
+	{
+		return new IntegerLiteral(Integer.parseInt(t.image));
+	}
+}
+
+TrueLiteral TrueLiteral():
+{}
+{
+	<TRUE>
+	{
+		return new TrueLiteral();
+	}
+}
+
+FalseLiteral FalseLiteral():
+{}
+{
+	<FALSE>
+	{
+		return new FalseLiteral();
+	}
+}
+
+IdentifierExpression IdentifierExpression():
+{Token t;}
+{
+	t=<IDENTIFIER>
+	{
+		return new IdentifierExpression(t.image);
+	}
+}
+
+ThisExpression ThisExpression():
+{}
+{
+	<THIS>
+	{
+		return new ThisExpression();
+	}
+}
+
+NewArray NewArray():
+{Exp exp;}
+{
+	<NEW> <INT> <LBRACKET> exp = Exp() <RBRACKET>
+	{
+		return new NewArray(exp);
+	}
+}
+
+NewObject NewObject():
+{NewObject obj; Identifier id;}
+{
+	<NEW> id = Identifier() <LPAREN> <RPAREN>
+	{return new NewObject(id);}
+}
+
+NotExpression NotExpression():
+{Exp exp;}
+{
+	<NOT> exp = Exp()
+	{return new NotExpression(exp);}
+}
+
+Exp BracketExpression():
+{Exp ex;}
+{
+	<LPAREN> ex = Exp() <RPAREN>
+	{return ex;}
+}
+
+Identifier Identifier():
+{Token t;}
+{
+	t = <IDENTIFIER>
+	{
+		return new Identifier(t.image);
+	}
+}
