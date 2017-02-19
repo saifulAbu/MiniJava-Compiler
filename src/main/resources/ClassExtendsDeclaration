@@ -1,0 +1,3 @@
+# classDeclExtends -> class id extends id {varDecl* methodDecl*} 
+class A extends B {int a; int b; public int m(int c){return a + b;}}
+class A extends B {int a; int b; public int m(int c){int i; i = 0; while(i < 10){i = i + 1;} return i;}}

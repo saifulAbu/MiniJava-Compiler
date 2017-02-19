@@ -1,5 +1,6 @@
 # MiniJavaCompiler
-A compiler to compile a subset of Java instructions. Made by following the book https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X
+A compiler to compile a subset of Java instructions. Made by following the book https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X. 
+JavaCC doc https://www.cs.purdue.edu/homes/hosking/javacc/doc/docindex.html
 
 create Parser classes from Grammer file (MiniJavaLexer.jj)
 0. install javacc in your machine

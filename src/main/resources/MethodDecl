@@ -1,0 +1,4 @@
+# methodDecl -> public type id (formalList?)
+#             { varDecl* stmt* return exp;}
+public int method(){return 0;}
+public int method(int a, int b, ClassName c){int c; ind d; c = a + b; d = c.method(); return d;}

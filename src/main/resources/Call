@@ -1,0 +1,6 @@
+object.method(1,2,3,id)
+object1.method().method2()
+object.method()
+object.method(1+2+3+id)
+object.method((1+2),3,id)
+object.method((1+2), (3+id))

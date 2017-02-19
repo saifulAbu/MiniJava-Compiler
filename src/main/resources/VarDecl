@@ -1,0 +1,5 @@
+# vardecl -> type id;
+int id;
+boolean id;
+int[] id;
+ClassName id;

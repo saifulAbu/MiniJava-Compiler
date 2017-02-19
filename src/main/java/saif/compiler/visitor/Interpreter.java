@@ -15,7 +15,7 @@ import saif.compiler.syntaxtree.FormalList;
 import saif.compiler.syntaxtree.Identifier;
 import saif.compiler.syntaxtree.IdentifierExpression;
 import saif.compiler.syntaxtree.IdentifierType;
-import saif.compiler.syntaxtree.IfStatment;
+import saif.compiler.syntaxtree.IfStatement;
 import saif.compiler.syntaxtree.IntArrayType;
 import saif.compiler.syntaxtree.IntegerLiteral;
 import saif.compiler.syntaxtree.IntegerType;
@@ -97,7 +97,7 @@ public class Interpreter implements Visitor{
 		
 	}
 
-	public void visit(IfStatment ifStatement) {
+	public void visit(IfStatement ifStatement) {
 		// TODO Auto-generated method stub
 		
 	}

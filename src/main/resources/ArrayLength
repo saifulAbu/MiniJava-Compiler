@@ -1,0 +1,3 @@
+obj.length
+obj[1+2].length
+(obj.method()).length

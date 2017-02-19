@@ -1,0 +1,6 @@
+## note: only one statment allowed inside main method
+# mainClass -> class id {
+#					public static void main(String [] id)
+#					{stmt}
+#              } 
+class Main {public static void main(String [] args) {System.out.println(new A().methodCall());}}

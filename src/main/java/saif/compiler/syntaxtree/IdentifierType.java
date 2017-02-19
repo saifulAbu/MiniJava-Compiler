@@ -1,6 +1,6 @@
 package saif.compiler.syntaxtree;
 
-public class IdentifierType {
+public class IdentifierType  extends Type{
 	String varName;
 
 	public IdentifierType(String varName) {

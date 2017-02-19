@@ -1,0 +1,7 @@
+!(a < b)
+!(true)
+!(false)
+!(true && false && ((1+2) < 5))
+!(a[2])
+!(a[b * c])
+!(obj.method())

@@ -1,0 +1,3 @@
+# stmt _> while(exp) stmt;
+while(id < 10){id = id + 1;}
+while(true){id = 3; System.out.println(id); id = id + 1;}

@@ -1,0 +1,5 @@
+# stmt -> {stmt*}
+{}
+{id = 3;}
+{id = 3; id = 4; id = 5;}
+{id = obj.method(); id = id + 4;}

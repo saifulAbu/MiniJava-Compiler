@@ -1,0 +1,4 @@
+new int[1 + 2 +3]
+new int[obj.method()]
+new int[obj.method(1, 2, 3) + 2]
+new int [obj.method(1+2, 3) * 2]

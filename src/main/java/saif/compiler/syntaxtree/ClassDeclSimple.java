@@ -1,5 +1,6 @@
 package saif.compiler.syntaxtree;
 
+import saif.compiler.visitor.Visitor;
 
 public class ClassDeclSimple extends ClassDecl{
 	Identifier className;
@@ -9,5 +10,10 @@ public class ClassDeclSimple extends ClassDecl{
 		this.className = className;
 		this.varDeclList = varDeclList;
 		this.methodList = methodList;
+	}
+	
+	@Override
+	public void accept(Visitor visitor) {
+		visitor.visit(this);
 	}
 }

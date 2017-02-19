@@ -1,0 +1,2 @@
+# program -> MainClass ClassDecl*
+class Main {public static void main(String [] args) {System.out.println(new A().methodCall());}} class A extends B {int a; int b; public int m(int c){int i; i = 0; while(i < 10){i = i + 1;} return i;}} 

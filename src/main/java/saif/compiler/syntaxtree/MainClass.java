@@ -1,7 +1,5 @@
 package saif.compiler.syntaxtree;
 
-import java.beans.Statement;
-
 public class MainClass {
 	Identifier className;
 	Identifier args;

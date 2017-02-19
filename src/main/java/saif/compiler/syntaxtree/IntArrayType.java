@@ -1,6 +1,6 @@
 package saif.compiler.syntaxtree;
 
-public class IntArrayType {
+public class IntArrayType extends Type {
 	public IntArrayType(){
 		
 	}
