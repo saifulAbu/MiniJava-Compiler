@@ -3,9 +3,9 @@ package saif.compiler.main;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import saif.compiler.parser.MiniJavaParser;
+import saif.compiler.parser.ParseException;
 import saif.compiler.syntaxtree.*;
-import saif.parser.MiniJavaParser;
-import saif.parser.ParseException;
 
 
 
@@ -13,7 +13,7 @@ public class Main {
    
    public static void main(String [] args) throws FileNotFoundException {
       try {
-         System.setIn(new FileInputStream("SampleProgram.java"));
+         System.setIn(new FileInputStream("SampleProgram.minjava"));
          Program program= new MiniJavaParser(System.in).Program();
          System.out.println("Lexical analysis successfull");
       }

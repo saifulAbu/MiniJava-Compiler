@@ -1,0 +1,30 @@
+/*
+created by Saiful Abu
+For learning more about compiler
+*/
+//a main class is the entry point of the program 
+class MainClass {
+    public static void main(String [] args){
+    	//there should be only one statement in the main class
+        System.out.println(new FactorialComputer().fact(5));
+    }
+}
+
+/*
+class to compute factorial operation
+*/
+class FactorialComputer{
+	/*
+    method to compute factorial operation
+    */
+    public int fact(int fact){
+        int result;
+        result = 1;
+        while(fact < 1){
+        	result = result * fact;
+        	fact = fact - 1;
+        }
+        return result;
+    } 
+}
+

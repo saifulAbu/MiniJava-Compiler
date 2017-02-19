@@ -17,6 +17,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import saif.compiler.parser.MiniJavaParser;
+import saif.compiler.parser.ParseException;
 import saif.compiler.syntaxtree.AndExpression;
 import saif.compiler.syntaxtree.ArrayAssignmentStatement;
 import saif.compiler.syntaxtree.ArrayLength;
@@ -50,8 +52,6 @@ import saif.compiler.syntaxtree.TimesExpression;
 import saif.compiler.syntaxtree.Type;
 import saif.compiler.syntaxtree.VarDecl;
 import saif.compiler.syntaxtree.WhileStatement;
-import saif.parser.MiniJavaParser;
-import saif.parser.ParseException;
 
 public class MiniJavaParserTest {
 	private static MiniJavaParser miniJavaParser;
