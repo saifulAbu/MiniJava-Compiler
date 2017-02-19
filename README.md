@@ -1,9 +1,8 @@
 # MiniJavaCompiler
-A compiler to compile a subset of Java instructions. I have implemented what I learnt from the [Moder Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X).
+A compiler to compile a subset of Java instructions. I have implemented what I learnt from the [Modern Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X).
 
 ## Description of the project
-The project is maven project. A sample java class that the compiler would compile is given in SampleProgram.minjava.
-The grammar can be found in saif.compiler.parser package. The name of the grammar file is MiniJavaLexer.jj. The grammar is created using [JavaCC](https://java.net/projects/javacc/). Looking at the [grammar](http://www.cambridge.org/resources/052182060X/MCIIJ2e/grammar.htm), you will have an understanding of what the compiler is capable of. 
+The compiler is a maven project. A sample java class that the compiler would compile is given in SampleProgram.minjava can be found in the root directory. The grammar can be found in saif.compiler.parser package. The name of the grammar file is MiniJavaLexer.jj. The grammar is created using [JavaCC](https://java.net/projects/javacc/). Looking at the [grammar](http://www.cambridge.org/resources/052182060X/MCIIJ2e/grammar.htm), you will have an understanding of what the compiler is capable of. 
 
 ## Running The project
 0. Go to the package saif.compiler.main. 
@@ -23,5 +22,5 @@ cd /compiler/src/main/java/saif/compiler/parser/
 javacc MiniJavaLexer.jj
 ```
 ## Useful Links
-[JavaCC Tutorial] (https://www.cs.purdue.edu/homes/hosking/javacc/doc/docindex.html)
-[Moder Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X)
+0. [JavaCC Tutorial] (https://www.cs.purdue.edu/homes/hosking/javacc/doc/docindex.html)
+1. [Moder Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X)
