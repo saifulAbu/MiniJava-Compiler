@@ -373,12 +373,20 @@ Exp Exp():
 
 Exp ExpPrime(Exp exp1):
 {
+	Token op;
 	Exp exp2, exp3;
 	Identifier id;
 	ExpList expList = null;
 }
 {
-	<PLUS> exp2 = Exp() {exp1 = new PlusExpression(exp1, exp2);} 
+	( op = <PLUS> | op = <MINUS> | op = <TIMES> | op = <AND> | op = <LESS>) exp2 = Exp() 
+	{
+	if(op.image.equals("+")){exp1 = new PlusExpression(exp1, exp2);}
+	else if(op.image.equals("-")){exp1 = new MinusExpression(exp1, exp2);}
+	else if(op.image.equals("*")){exp1 = new TimesExpression(exp1, exp2);}
+	else if(op.image.equals("&&")){exp1 = new AndExpression(exp1, exp2);}
+	else {exp1 = new LessThanExpression(exp1, exp2);}
+	} 
 	(LOOKAHEAD(2) exp1 = ExpPrime(exp1))? {return exp1;}
 	| LOOKAHEAD(2) <DOT> id = Identifier() <LPAREN> (expList = ExpList())? <RPAREN> 
 	 {exp1 = new Call(exp1, id, expList);}
