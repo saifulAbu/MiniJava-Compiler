@@ -341,8 +341,56 @@ PrintStatement PrintStatement():
 	}
 }
 
+//Expression list
+ExpList ExpList(): 
+{ExpList expList = new ExpList(); Exp exp;}
+{
+   exp = Exp() {expList.addElement(exp);} (exp = ExpRest() {expList.addElement(exp);})*
+   {return expList;}
+}
+
+Exp ExpRest():
+{Exp ex;}
+{
+    <COMMA> ex = Exp() {return ex;}
+}
+
 //Expression
+//rewriting Exp part to correct the problem
 Exp Exp():
+{Exp exp;}
+{
+	exp = IntegerLiteral() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| exp = BracketExpression() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;} 
+	| exp = NotExpression() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| LOOKAHEAD(2) exp = NewObject() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| exp = NewArray() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;} 
+	| exp = ThisExpression() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| exp = IdentifierExpression() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| exp = FalseLiteral() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;}
+	| exp = TrueLiteral() (LOOKAHEAD(2) exp = ExpPrime(exp))? {return exp;} 
+}
+
+Exp ExpPrime(Exp exp1):
+{
+	Exp exp2, exp3;
+	Identifier id;
+	ExpList expList = null;
+}
+{
+	<PLUS> exp2 = Exp() {exp1 = new PlusExpression(exp1, exp2);} 
+	(LOOKAHEAD(2) exp1 = ExpPrime(exp1))? {return exp1;}
+	| LOOKAHEAD(2) <DOT> id = Identifier() <LPAREN> (expList = ExpList())? <RPAREN> 
+	 {exp1 = new Call(exp1, id, expList);}
+	 (LOOKAHEAD(2) exp1 = ExpPrime(exp1))? {return exp1;}
+	|<DOT> <LENGTH> {exp1 = new ArrayLength(exp1);}
+	(LOOKAHEAD(2) exp1 = ExpPrime(exp1))? {return exp1;} 
+	|<LBRACKET> exp2 = Exp() <RBRACKET> {exp1 = new ArrayLookup(exp1, exp2);}
+     (LOOKAHEAD(2) exp1 = ExpPrime(exp1))? {return exp1;}
+}
+
+
+Exp Exp123():
 {Exp exp;}
 {
 	LOOKAHEAD(3) exp = PrimaryExpression() {return exp;}
@@ -429,18 +477,6 @@ Call Call():
     }
 }
 
-ExpList ExpList(): 
-{ExpList expList = new ExpList(); Exp exp;}
-{
-   exp = Exp() {expList.addElement(exp);} (exp = ExpRest() {expList.addElement(exp);})*
-   {return expList;}
-}
-
-Exp ExpRest():
-{Exp ex;}
-{
-    "," ex = Exp() {return ex;}
-}
 Exp PrimaryExpression():
 {Exp exp;}
 {
@@ -453,6 +489,29 @@ Exp PrimaryExpression():
     | exp = NewObject() {return exp;}
     | exp = NotExpression() {return exp;}
     | exp = BracketExpression() {return exp;}
+}
+
+NotExpression NotExpression():
+{Exp exp;}
+{
+	<NOT> exp = Exp()
+	{return new NotExpression(exp);}
+}
+
+Exp BracketExpression():
+{Exp ex;}
+{
+	<LPAREN> ex = Exp() <RPAREN>
+	{return ex;}
+}
+
+NewArray NewArray():
+{Exp exp;}
+{
+	<NEW> <INT> <LBRACKET> exp = Exp() <RBRACKET>
+	{
+		return new NewArray(exp);
+	}
 }
 
 IntegerLiteral IntegerLiteral():
@@ -500,34 +559,11 @@ ThisExpression ThisExpression():
 	}
 }
 
-NewArray NewArray():
-{Exp exp;}
-{
-	<NEW> <INT> <LBRACKET> exp = Exp() <RBRACKET>
-	{
-		return new NewArray(exp);
-	}
-}
-
 NewObject NewObject():
 {NewObject obj; Identifier id;}
 {
 	<NEW> id = Identifier() <LPAREN> <RPAREN>
 	{return new NewObject(id);}
-}
-
-NotExpression NotExpression():
-{Exp exp;}
-{
-	<NOT> exp = Exp()
-	{return new NotExpression(exp);}
-}
-
-Exp BracketExpression():
-{Exp ex;}
-{
-	<LPAREN> ex = Exp() <RPAREN>
-	{return ex;}
 }
 
 Identifier Identifier():
