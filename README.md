@@ -23,4 +23,4 @@ javacc MiniJavaLexer.jj
 ```
 ## Useful Links
 0. [JavaCC Tutorial] (https://www.cs.purdue.edu/homes/hosking/javacc/doc/docindex.html)
-1. [Moder Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X)
+1. [Modern Compiler Implementation in Java](https://www.amazon.com/Modern-Compiler-Implementation-Andrew-Appel/dp/052182060X)
