@@ -9,7 +9,6 @@ The compiler is a maven project. A sample java class that the compiler would com
 1. Run the file Main.java in this pakcage. By default, this will compile the SampleProgram.minijava file.
 
 Upto now the compiler has the following.
-
 0. the minijava grammar and will detect token or grammar declaration
 1. is able to create a abstract syntax tree. You can set a debug pointer to see the tree structure.
 2. is able to generate symbol table, any occurance of duplicate identifier declaration will be caught in this phase
