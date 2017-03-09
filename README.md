@@ -8,18 +8,19 @@ The compiler is a maven project. A sample java class that the compiler would com
 0. Go to the package saif.compiler.main. 
 1. Run the file Main.java in this pakcage. By default, this will compile the SampleProgram.minijava file.
 
-Upto now the compiler has
+Upto now the compiler has-
 0. the minijava grammar and will detect token or grammar declaration
 1. is able to create a abstract syntax tree. You can set a debug pointer to see the tree structure.
 2. is able to generate symbol table, any occurance of duplicate identifier declaration will be caught in this phase
 3. is able to do type check, any occurance of type mismatch, unknown identifier reference will be caught in this phase
+
 ## Updating the grammar
 If you extend the provided grammar, you will have to recomiple parser classes.
 0. install javacc in your machine
     [for ubuntu : sudo apt-get update
     sudo apt-get install javacc]
 1. update the grammar located in /compiler/src/main/java/saif/compiler/parser/MiniJavaLexer.jj as required.
-1. Execute the following command. 
+2. Execute the following command. 
 ``` sh	
 cd /compiler/src/main/java/saif/compiler/parser/
 javacc MiniJavaLexer.jj
