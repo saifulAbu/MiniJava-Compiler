@@ -3,7 +3,7 @@ package saif.compiler.syntaxtree;
 import saif.compiler.visitor.Visitor;
 
 public class AndExpression extends Exp{
-	Exp e1, e2;
+	public Exp e1, e2;
 	
 	public AndExpression(Exp e1, Exp e2){
 		this.e1 = e1;
@@ -11,7 +11,7 @@ public class AndExpression extends Exp{
 	}
 	
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
+	public Object accept(Visitor visitor) {
+		return visitor.visit(this);
 	}
 }

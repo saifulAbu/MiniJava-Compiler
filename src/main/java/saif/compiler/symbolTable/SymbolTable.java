@@ -1,9 +1,9 @@
-package saif.compiler.syntaxtable;
+package saif.compiler.symbolTable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SyntaxTable {
+public class SymbolTable {
 	String mainClassName = null;
 	Map<String, ClassEntry> classMap = new HashMap<>();
 	
@@ -13,6 +13,10 @@ public class SyntaxTable {
 		}
 		classMap.put(className, classEntry);
 		return true;
+	}
+	
+	public ClassEntry getClassEntry(String className){
+		return classMap.get(className);
 	}
 	
 	public boolean setMainClass(String mainClassName){
@@ -25,5 +29,17 @@ public class SyntaxTable {
 	
 	public String getMainClassName(){
 		return mainClassName;
+	}
+	
+	public void printSymbolTable(){
+		System.out.println("mainclass :: "+ mainClassName);
+		for(String className : classMap.keySet()){
+			if(className.equals(mainClassName)){
+				continue;
+			}
+			System.out.println("className :: " + className);
+			classMap.get(className).printClassEntry();
+			System.out.println();
+		}
 	}
 }

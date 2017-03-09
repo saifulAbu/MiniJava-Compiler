@@ -3,9 +3,9 @@ package saif.compiler.syntaxtree;
 import saif.compiler.visitor.Visitor;
 
 public class Call extends Exp{
-	Exp e;
-	Identifier id;
-	ExpList expList;
+	public Exp e;  //the object
+	public Identifier id; //the method name
+	public ExpList expList; //list of arguments
 	
 	public Call(Exp e, Identifier id, ExpList expList){
 		this.e = e;
@@ -14,7 +14,7 @@ public class Call extends Exp{
 	}
 
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
+	public Object accept(Visitor visitor) {
+		return visitor.visit(this);
 	}
 }

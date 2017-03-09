@@ -9,9 +9,11 @@ import saif.compiler.syntaxtree.Block;
 import saif.compiler.syntaxtree.BooleanType;
 import saif.compiler.syntaxtree.Call;
 import saif.compiler.syntaxtree.ClassDecl;
+import saif.compiler.syntaxtree.ClassDeclSimple;
 import saif.compiler.syntaxtree.ClassExtendsDeclaration;
 import saif.compiler.syntaxtree.FalseLiteral;
 import saif.compiler.syntaxtree.FormalList;
+import saif.compiler.syntaxtree.FormalParameter;
 import saif.compiler.syntaxtree.Identifier;
 import saif.compiler.syntaxtree.IdentifierExpression;
 import saif.compiler.syntaxtree.IdentifierType;
@@ -35,47 +37,46 @@ import saif.compiler.syntaxtree.TrueLiteral;
 import saif.compiler.syntaxtree.VarDecl;
 import saif.compiler.syntaxtree.WhileStatement;
 
-public interface Visitor {
-	public void visit(Program program);
+public interface Visitor <E>{
+	public E visit(Program program);	
+	public E visit(MainClass mainClass);
+	public E visit(ClassDeclSimple classDecl);
+	public E visit(ClassExtendsDeclaration classDeclExtends);
+	public E visit(VarDecl varDecl);
+	public E visit(MethodDecl methodDecl);
 	
-	public void visit(MainClass mainClass);
-	public void visit(ClassDecl classDecl);
-	public void visit(ClassExtendsDeclaration classDeclExtends);
-	public void visit(VarDecl varDecl);
-	public void visit(MethodDecl methodDecl);
+	public E visit(FormalParameter formalParam);
+	public E visit(IntArrayType intArrayType);
+	public E visit(BooleanType booleanType);
+	public E visit(IntegerType integerType);
+	public E visit(IdentifierType identifierType);
 	
-	public void visit(FormalList formalParam);
-	public void visit(IntArrayType intArrayType);
-	public void visit(BooleanType booleanType);
-	public void visit(IntegerType integerType);
-	public void visit(IdentifierType identifierType);
+	public E visit(Block block);
+	public E visit(IfStatement ifStatement);
+	public E visit(WhileStatement whileStatement);
+	public E visit(PrintStatement printStatement);
+	public E visit(AssignmentStatement assignmentStatement);
 	
-	public void visit(Block block);
-	public void visit(IfStatement ifStatement);
-	public void visit(WhileStatement whileStatement);
-	public void visit(PrintStatement printStatement);
-	public void visit(AssignmentStatement assignmentStatement);
+	public E visit(ArrayAssignmentStatement arrayAssignmentStmt);
+	public E visit(AndExpression andExpr);
+	public E visit(LessThanExpression lessThanExpr);
+	public E visit(PlusExpression plusExpr);
+	public E visit(MinusExpression minusExpr);
 	
-	public void visit(ArrayAssignmentStatement arrayAssignmentStmt);
-	public void visit(AndExpression andExpr);
-	public void visit(LessThanExpression lessThanExpr);
-	public void visit(PlusExpression plusExpr);
-	public void visit(MinusExpression minusExpr);
+	public E visit(TimesExpression timesExpr);
+	public E visit(ArrayLookup arrayLookup);
+	public E visit(ArrayLength arrayLength);
+	public E visit(Call call);
+	public E visit(IntegerLiteral intLit);
 	
-	public void visit(TimesExpression timesExpr);
-	public void visit(ArrayLookup arrayLookup);
-	public void visit(ArrayLength arrayLength);
-	public void visit(Call call);
-	public void visit(IntegerLiteral intLit);
+	public E visit(TrueLiteral trueLit);
+	public E visit(FalseLiteral falseLit);
+	public E visit(IdentifierExpression identifierExpr);
+	public E visit(ThisExpression thisExpr);
+	public E visit(NewArray newArr);
 	
-	public void visit(TrueLiteral trueLit);
-	public void visit(FalseLiteral falseLit);
-	public void visit(IdentifierExpression identifierExpr);
-	public void visit(ThisExpression thisExpr);
-	public void visit(NewArray newArr);
-	
-	public void visit(NewObject newObj);
-	public void visit(NotExpression notExpr);
-	public void visit(Identifier id);
+	public E visit(NewObject newObj);
+	public E visit(NotExpression notExpr);
+	public E visit(Identifier id);
 	
 }

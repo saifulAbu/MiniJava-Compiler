@@ -15,7 +15,7 @@ public class ClassExtendsDeclaration extends ClassDecl{
 	}
 	
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
+	public Object accept(Visitor visitor) {
+		return visitor.visit(this);
 	}
 }

@@ -4,7 +4,7 @@ import saif.compiler.visitor.Visitor;
 
 public class ThisExpression extends Exp{
 	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
+	public Object accept(Visitor visitor) {
+		return visitor.visit(this);
 	}
 }

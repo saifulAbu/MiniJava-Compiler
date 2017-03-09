@@ -1,9 +1,9 @@
 package saif.compiler.syntaxtree;
 
 public class Identifier {
-	String id;
+	public String name;
 	
 	public Identifier(String id){
-		this.id = id;
+		this.name = id;
 	}
 }

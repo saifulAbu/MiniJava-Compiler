@@ -7,4 +7,9 @@ public class IdentifierType  extends Type{
 		super();
 		this.varName = varName;
 	}
+	
+	@Override
+	public String toString(){
+		return varName;
+	}
 }

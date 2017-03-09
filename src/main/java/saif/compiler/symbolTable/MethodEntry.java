@@ -1,4 +1,4 @@
-package saif.compiler.syntaxtable;
+package saif.compiler.symbolTable;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -6,9 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 public class MethodEntry{
+	public String methodName;
+	public String returnType;
 	Map<String, String> paramMap = new HashMap<>();
 	Map<String, String> localMap = new HashMap<>();
 	List<String> parameterTypeList = new LinkedList<>();
+	
+	public MethodEntry(String methodName, String returnType){
+		this.methodName = methodName;
+		this.returnType = returnType;
+	}
 	
 	public boolean addParameter(String paramName, String type){
 		if(paramMap.containsKey(paramName)){
@@ -43,5 +50,38 @@ public class MethodEntry{
 	
 	public String getParameterTypeAtPosition(int position){
 		return parameterTypeList.get(position);
+	}
+	
+	public int getParamCount(){
+		return parameterTypeList.size();
+	}
+
+	public void printMethodEntry() {
+		String types = "";
+		for(String type : parameterTypeList){
+			types = types + type + " ";
+		}
+		System.out.println("\t" + returnType + " " + methodName + "(" + types + ")");
+		println("params");
+		printlnBrk();
+		for(String paramName : paramMap.keySet()){
+			println(paramName + " -- " + paramMap.get(paramName));
+		}
+		println("");
+		println("locals");
+		printlnBrk();
+		for(String local : localMap.keySet()){
+			println(local + " -- " + localMap.get(local));
+		}
+		println("");
+	}
+	
+	private void println(String line){
+		String indentation = "\t\t";
+		System.out.println(indentation + line);
+	}
+	
+	private void printlnBrk(){
+		println("=====================");
 	}
 }

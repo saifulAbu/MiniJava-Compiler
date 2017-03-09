@@ -14,17 +14,46 @@ class MainClass {
 class to compute factorial operation
 */
 class FactorialComputer{
+	int x;
+	int y;
+	int z;
 	/*
     method to compute factorial operation
     */
     public int fact(int fact){
         int result;
-        result = 1;
+        int y;
+        int z;
+        X p;
+      	p = new X();
+        result = u.unknown();
         while(fact < 1){
         	result = result * fact;
         	fact = fact - 1;
         }
-        return result;
+        return fact;
     } 
+}
+
+class X{
+	int var1;
+	int var2;
+	Y obj1;
+	
+	public Z test(Y y, Z z){
+		int t;
+		t = y.call(z);
+		return z;
+	}
+}
+
+class Y{
+	public int call(Z z){
+		return 10;
+	}
+}
+
+class Z{
+
 }
 
