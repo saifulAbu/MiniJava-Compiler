@@ -1,6 +1,6 @@
 package saif.compiler.visitor;
 
-import saif.compiler.symbolTable.*;
+import saif.compiler.symbol.*;
 import saif.compiler.syntaxtree.AndExpression;
 import saif.compiler.syntaxtree.ArrayAssignmentStatement;
 import saif.compiler.syntaxtree.ArrayLength;

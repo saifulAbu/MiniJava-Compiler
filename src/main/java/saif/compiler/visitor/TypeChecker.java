@@ -2,9 +2,9 @@ package saif.compiler.visitor;
 
 import javax.print.attribute.standard.RequestingUserName;
 
-import saif.compiler.symbolTable.ClassEntry;
-import saif.compiler.symbolTable.MethodEntry;
-import saif.compiler.symbolTable.SymbolTable;
+import saif.compiler.symbol.ClassEntry;
+import saif.compiler.symbol.MethodEntry;
+import saif.compiler.symbol.SymbolTable;
 import saif.compiler.syntaxtree.AndExpression;
 import saif.compiler.syntaxtree.ArrayAssignmentStatement;
 import saif.compiler.syntaxtree.ArrayLength;

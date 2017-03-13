@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 
 import saif.compiler.parser.MiniJavaParser;
 import saif.compiler.parser.ParseException;
-import saif.compiler.symbolTable.SymbolTable;
+import saif.compiler.symbol.SymbolTable;
 import saif.compiler.syntaxtree.*;
 import saif.compiler.visitor.SymbolTableBuilder;
 import saif.compiler.visitor.TypeChecker;

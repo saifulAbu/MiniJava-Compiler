@@ -1,4 +1,4 @@
-package saif.compiler.symbolTable;
+package saif.compiler.symbol;
 
 import java.util.HashMap;
 import java.util.LinkedList;
